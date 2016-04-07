@@ -1,1 +1,4 @@
 responses
+BeautifulSoup4
+chardet
+
