@@ -33,8 +33,8 @@ def getUserWeibo(req=requests):
             url = base_url + str(i)
             print url
             try:
+                r = getHtml(url, '', req = req, save = 'db', tag='second')
                 if getnum == False:
-                    r = getHtml(url, '', req = req, save = 'db', tag='second')
                     pagenum = getPageNum(r)
                     getnum = True
             except:
