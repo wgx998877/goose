@@ -27,13 +27,16 @@ def getUserWeibo(req=requests):
         base_url = 'http://weibo.cn/%s?filter=1&page=' % u
         print base_url
         pagenum = 200
+        getnum = False
         i = 1
         while i <= pagenum:
             url = base_url + str(i)
             print url
             try:
-                r = getHtml(url, '', req = req, save = 'db', tag='second')
-                pagenum = getPageNum(r)
+                if getnum == False:
+                    r = getHtml(url, '', req = req, save = 'db', tag='second')
+                    pagenum = getPageNum(r)
+                    getnum = True
             except:
                 pass
             i += 1
