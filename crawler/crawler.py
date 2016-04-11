@@ -13,18 +13,45 @@ from util import getHtml, getHeader
 from bs4 import BeautifulSoup as bs
 
 def main():
-    #crawlGooseUserList()
-    url = 'http://weibo.com/aitangming'
-    r = getUserWeibo(url)
-    print r
+    r = getUserWeibo()
 
-def getUserWeibo(url):
-    r = getHtml(url, '', save = db)
+def getUserList(f = 'user.txt'):
+    r = open(f).readlines()
     return r
 
+def getUserWeibo(req=requests):
+    user = getUserList()
+    for u in user:
+        print u,'begin'
+        u = u.strip()
+        base_url = 'http://weibo.cn/%s?filter=1&page=' % u
+        print base_url
+        pagenum = 200
+        i = 1
+        while i <= pagenum:
+            url = base_url + str(i)
+            print url
+            try:
+                r = getHtml(url, '', req = req, save = 'db', tag='second')
+                pagenum = getPageNum(r)
+            except:
+                pass
+            i += 1
+        print u,'done'
+    return r
+
+def getPageNum(html):
+    soup = bs(html)
+    page = soup.find(id='pagelist').find(type='hidden')
+    pagenum = page['value']
+    pagenum = int(pagenum)
+    return pagenum
+
+
 def crawlGooseUserList():
-    #req = loginWeibo()
-    req = requests
+    #this function useless, need to login first
+    req = loginWeibo()
+    #req = requests
     base_url = 'http://d.weibo.com/230771_-_EXPERTUSER?page=%d#Pl_Core_F4RightUserList__4'
     page_num = 22
     for page_index in range(1, page_num):
@@ -36,30 +63,23 @@ def crawlGooseUserList():
         break
 
 
-
-
 def loginWeibo():
-    username = 'wgx998877@gmail.com'
-    passwd = 'wgx4619200'
-    weiboUrl = 'http://weibo.cn/pub/'
-    loginUrl  = bs(requests.get(weiboUrl).content).find("div",{"class":"ut"}).find("a")['href']
-    origInfo  = bs(requests.get(loginUrl).content)
-    loginInfo = origInfo.find("form")['action']
-    loginpostUrl = 'http://login.weibo.cn/login/'+loginInfo
-    headers = { 'Host': 'login.weibo.cn',
-            'User-Agent' : 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0; BOIE9;ZHCN)',
-            'Referer' : 'http://login.weibo.cn/login/?ns=1&revalid=2&backURL=http%3A%2F%2Fweibo.cn%2F&backTitle=%D0%C2%C0%CB%CE%A2%B2%A9&vt=',
-           }
-    postData = { 'mobile': username,
-             origInfo.find("form").find("input",{"type":"password"})['name']: passwd,
-             'remember':'on',
-             'backURL':origInfo.find("form").find("input",{"name":"backURL"})['value'],
-             'backTitle': origInfo.find("form").find("input",{"name":"backTitle"})['value'],
-             'tryCount': origInfo.find("form").find("input",{"name":"tryCount"})['value'],
-             'vk': origInfo.find("form").find("input",{"name":"vk"})['value'],
-             'submit': origInfo.find("form").find("input",{"name":"submit"})['value'],
-             }
+    #this function useless, ai...
+    username = ''
+    passwd = ''
+    postData = {
+            'username' : username,
+            'password' : passwd
+            }
+    loginpostUrl = 'http://passport.weibo.cn/signin/login'
+    headers = {
+            'Accept' : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Host' : 'passport.weibo.cn',
+            'User-Agent' : 'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.23 Mobile Safari/537.36',
+            'Cookie' : '_T_WM=8d2276960cb86ea6080a9f03161404b4'
+            }
     req = requests.Session()
+
     u = req.post(loginpostUrl, data = postData, headers=headers)
     cookies = u.cookies
     print cookies

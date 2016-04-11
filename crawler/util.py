@@ -46,7 +46,6 @@ def saveStr2File(content, path):
     fo.write(content)
     return True
 
-cookie = 'YF-Ugrow-G0=3a02f95fa8b3c9dc73c74bc9f2ca4fc6; login_sid_t=10d5ae9758bc06dd89c2959cb0be5e90; _s_tentry=-; Apache=1285878793156.5852.1460015367078; SINAGLOBAL=1285878793156.5852.1460015367078; ULV=1460015367083:1:1:1:1285878793156.5852.1460015367078:; SUS=SID-2605852175-1460015535-GZ-asfvm-841584dbfc965df320154190155ea992; SUE=es%3Da5d4dc8ab4d179645fa4407132b38609%26ev%3Dv1%26es2%3De1327c6d7af912b212ad5a455a63a9d0%26rs0%3DKcrrkA%252Bn26hB3m7tuyyuqngoLKAgt%252BBu1v3v%252F%252B26sfZkB%252BcQDPwcVWG2kOUw01gq3TB9qDfEsAOTAM4kiUX3nD1CjHfGkoIr78iC8LWRgYIw5zbiiLLxgTkwKlU9FFwAD%252Bi0hyqw0b2L%252BZHsjjWJo7nwjUAt%252Bhf11T2TsWcDlnc%253D%26rv%3D0; SUP=cv%3D1%26bt%3D1460015535%26et%3D1460101935%26d%3Dc909%26i%3Da992%26us%3D1%26vf%3D0%26vt%3D0%26ac%3D0%26st%3D0%26uid%3D2605852175%26name%3Dwgx998877%2540gmail.com%26nick%3D%25E7%258E%258B%25E5%259B%25BD%25E9%2591%25AB998877%26fmp%3D%26lcp%3D2015-01-08%252000%253A57%253A56; SUB=_2A256AmH_DeRxGeRI61cZ9SzNzDmIHXVZdtQ3rDV8PUNbuNBeLWr1kW9LHeuL11u_2la2lTUGY1nYMEO9QpvISw..; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9Whk3Fl-OL4YRyhbG2Hxkjgp5JpX5K2t; SUHB=0xnDJi5mVnwHej; ALF=1491551532; SSOLoginState=1460015535; un=wgx998877@gmail.com'
 
 def getJson(url, retry = 3, req = None):
     r = 0
@@ -55,8 +54,9 @@ def getJson(url, retry = 3, req = None):
     while (r < retry):
         try:
             h = getHeader()
-            h['cookies'] = cookie
-            ret = req.get(url, headers=h)
+            #h['cookies'] = cookie
+            #print h
+            ret = req.get(url, headers=h, cookies=getCookies())
             return ret.text
             #time.sleep(1);
         except Exception,e :
@@ -64,6 +64,27 @@ def getJson(url, retry = 3, req = None):
             time.sleep(0.5)
         r += 1
     return None
+
+def getCookies():
+
+    cookies = {
+                '_T_WM':'00f3d7e52fbb96b4c9dde5234b6aba51',
+                'SUB':'_2A256B-VyDeRxGeRG61QS-C_Fzz2IHXVZC4s6rDV6PUJbrdANLWTHkW1LHesfC7i3mQX30MZOU714G0eiE0zWmQ..',
+                'gsid_CTandWM':'4u9R33741UirXiAEKNJPRbM4dfb',
+                '_T_WL':'1',
+                '_WEIBO_UID':'2806381941',
+                'SUS':'SID-2806381941-1428935102-GZ-z05gd-be25ee0f2ed9e813daceb679eb48061e',
+                'SSOLoginState':'1428935102',
+             }
+    cookies = {
+            'SUHB':'0XDkbKAghs7_ao',
+            '_T_WM':'79ecab12f0d1e52b0b7e16c1f2518ee5',
+            'SUB':'_2A256AmsMDeRxGeRI61cZ9SzNzDmIHXVZDXVErDV6PUJbrdANLVfAkW1LHeuD5Ar_nqMJRMGD6neZk_IrBwpM1g..',
+            'gsid_CTandWM':'uVGe6b91qis1LiqF29ulaVTS2P',
+            'H5_INDEX':'1',
+            'H5_INDEX_TITLE':'%E9%91%AB_Darcy',
+            }
+    return cookies
 
 def getHeader():
     header = {
